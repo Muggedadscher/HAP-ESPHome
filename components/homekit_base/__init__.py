@@ -50,16 +50,19 @@ cv.only_with_esp_idf)
 
 async def to_code(config):
     # cg.add_define("CONFIG_ESP_MFI_DEBUG_ENABLE")
-    
-    # Add components individually using the registry versions
-    # This should be more reliable than using the full SDK
+    add_idf_component(
+        name="idf-extra-components",
+        repo="https://github.com/espressif/idf-extra-components.git",
+        ref="master",
+        components=["libsodium", "jsmn", "json_parser", "json_generator"],
+        submodules=["libsodium/libsodium"]
+    )
     add_idf_component(
         name="esp-homekit-sdk",
         repo="https://github.com/rednblkx/esp-homekit-sdk",
         ref="master",
-        components=["esp_hap_core", "esp_hap_apple_profiles", "esp_hap_extras", "esp_hap_platform", "hkdf-sha", "mu_srp"]
+        components=["esp_hap_core", "esp_hap_apple_profiles", "esp_hap_extras", "esp_hap_platform", "hkdf-sha", "mu_srp"],
     )
-    
     info_temp = []
     if "meta" in config:
         for m in config["meta"]:
