@@ -50,19 +50,32 @@ cv.only_with_esp_idf)
 
 async def to_code(config):
     # cg.add_define("CONFIG_ESP_MFI_DEBUG_ENABLE")
+    
+    # Add IDF components with explicit version constraints to avoid conflicts
     add_idf_component(
         name="idf-extra-components",
         repo="https://github.com/espressif/idf-extra-components.git",
         ref="master",
-        components=["libsodium", "jsmn", "json_parser", "json_generator"],
-        submodules=["libsodium/libsodium"]
+        components=["libsodium", "json_parser", "json_generator"],
+        submodules=["libsodium/libsodium"],
+        refresh=False  # Prevent refresh issues
     )
+    
+    # Add jsmn separately to control version
+    add_idf_component(
+        name="jsmn",
+        repo="https://github.com/zserge/jsmn.git",
+        ref="v1.1.0"  # Use specific version tag
+    )
+    
     add_idf_component(
         name="esp-homekit-sdk",
         repo="https://github.com/rednblkx/esp-homekit-sdk",
         ref="master",
         components=["esp_hap_core", "esp_hap_apple_profiles", "esp_hap_extras", "esp_hap_platform", "hkdf-sha", "mu_srp"],
+        refresh=False  # Prevent refresh issues
     )
+    
     info_temp = []
     if "meta" in config:
         for m in config["meta"]:
